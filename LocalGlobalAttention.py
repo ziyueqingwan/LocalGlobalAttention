@@ -28,8 +28,7 @@ class LocalGlobalAttention(nn.Module):
         ])
 
         self.global_conv = nn.Sequential(
-            nn.Conv2d(embed_dim, embed_dim, kernel_size=global_kernel_size, padding=global_kernel_size // 2,
-                      groups=embed_dim),
+            nn.Conv2d(embed_dim, embed_dim, kernel_size=global_kernel_size, padding=global_kernel_size // 2, groups=embed_dim),
             nn.Conv2d(embed_dim, embed_dim * 3, kernel_size=1, groups=num_heads)
         )
 
@@ -64,15 +63,12 @@ class LocalGlobalAttention(nn.Module):
             scaled_x += x
             multi_scale_features.append(scaled_x)
         scale_weights = self.scale_attention(x) 
-        x_multi_scale = sum(scale_weights[:, i:i+1, :, :] * multi_scale_features[i]
-                            for i in range(self.num_scales + 1))
-
+        x_multi_scale = sum(scale_weights[:, i:i+1, :, :] * multi_scale_features[i]for i in range(self.num_scales + 1))
 
         local_outs = []
         for local_conv in self.local_convs:
             local_query, local_key, local_value = local_conv(x_multi_scale + position_encoding).chunk(3, dim=1)
             local_query, local_key, local_value = split_heads(local_query), split_heads(local_key), split_heads(local_value)
-
             local_energy = torch.einsum('bhqd, bhkd -> bhqk', local_query, local_key) * self.scale
             local_attention = self.softmax(local_energy)
             local_out = torch.einsum('bhqk, bhvd -> bhqd', local_attention, local_value)
