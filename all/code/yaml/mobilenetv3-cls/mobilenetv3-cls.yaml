@@ -1,0 +1,35 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# YOLOv8-cls image classification model. For Usage examples see https://docs.ultralytics.com/tasks/classify
+
+# Parameters
+nc: 1000  # number of classes
+scales: # model compound scaling constants, i.e. 'model=yolov8n-cls.yaml' will call yolov8-cls.yaml with scale 'n'
+  # [depth, width, max_channels]
+  n: [0.33, 0.25, 1024]
+  s: [0.33, 0.50, 1024]
+  m: [0.67, 0.75, 1024]
+  l: [1.00, 1.00, 1024]
+  x: [1.00, 1.25, 1024]
+
+# YOLOv8.0n backbone
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, conv_bn_hswish, [16, 2]]  # 0-P1/2
+ 
+  - [-1, 1, MobileNetV3_InvertedResidual, [16, 16, 3, 2, 1, 0]]  # 1-p2/4
+ 
+  - [-1, 1, MobileNetV3_InvertedResidual, [24, 72, 3, 2, 0, 0]]  # 2-p3/8
+  - [-1, 1, MobileNetV3_InvertedResidual, [24, 88, 3, 1, 0, 0]]
+ 
+  - [-1, 1, MobileNetV3_InvertedResidual, [40, 96, 5, 2, 1, 1]]  # 4-p4/16
+  - [-1, 1, MobileNetV3_InvertedResidual, [40, 240, 5, 1, 1, 1]]
+  - [-1, 1, MobileNetV3_InvertedResidual, [40, 240, 5, 1, 1, 1]]
+  - [-1, 1, MobileNetV3_InvertedResidual, [48, 120, 5, 1, 1, 1]]
+  - [-1, 1, MobileNetV3_InvertedResidual, [48, 144, 5, 1, 1, 1]]
+ 
+  - [-1, 1, MobileNetV3_InvertedResidual, [96, 288, 5, 2, 1, 1]]  # 9-p5/32
+  - [-1, 1, MobileNetV3_InvertedResidual, [96, 576, 5, 1, 1, 1]]
+  - [-1, 1, MobileNetV3_InvertedResidual, [96, 576, 5, 1, 1, 1]]
+# YOLOv8.0n head
+head:
+  - [-1, 1, Classify, [nc]]  # Classify
