@@ -4,7 +4,7 @@ There are two folders and one file under the **code** directory:
 
 ## LocalGlobalAttention.py
 
-The **LocalGlobalAttention.py** file contains the core code of the paper. The underlying principles are explained in the paper.
+The **LocalGlobalAttention.py** file contains the core code .
 
 ## yaml
 
